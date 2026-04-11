@@ -1,0 +1,22 @@
+{
+  "documents": [
+    {
+      "id": "2026-04-11-website-dev-doc",
+      "title": "📝 个人IP网站开发文档",
+      "date": "2026-04-11",
+      "category": "模板",
+      "excerpt": "网站开发的技术文档，包含架构设计、功能规划、部署方案等内容。",
+      "source": "feishu",
+      "feishuUrl": "https://my.feishu.cn/docx/RSFwd7r2coej4KxoehYcAkPHnld"
+    },
+    {
+      "id": "2026-04-11-buer-content-draft",
+      "title": "📝 不二内容草稿",
+      "date": "2026-04-11",
+      "category": "笔记",
+      "excerpt": "用于存放待发布的网站文章内容，通过AI辅助创作。",
+      "source": "feishu",
+      "feishuUrl": "https://my.feishu.cn/docx/EDs8dUD7ooKnu1xtYFVcGfXIn5e"
+    }
+  ]
+}
