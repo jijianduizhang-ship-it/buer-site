@@ -151,58 +151,8 @@
         padding: 6px 0;
       }
     }
-    .header-inner {
-      display: flex; justify-content: space-between; align-items: center;
-      max-width: 1200px; margin: 0 auto; padding: 0 24px;
-    }
-    @media (max-width: 768px) {
-      .header-inner { padding: 0 16px; }
-      nav { gap: 16px !important; }
-      .nav-link { font-size: 13px !important; padding: 6px 0; }
-    }
-    @media (max-width: 480px) {
-      nav { gap: 10px !important; }
-      .nav-link { font-size: 12px !important; }
-    }
-    .logo { display: flex; align-items: center; gap: 12px; }
-    .logo-icon {
-      width: 44px;
-      height: 44px;
-      width: 40px; height: 40px;
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-teal));
-      border-radius: 12px; display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 0 30px rgba(0,212,170,0.3);
-    }
-    .logo-text {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 24px; font-weight: 700;
-      background: linear-gradient(135deg, var(--accent-cyan), var(--text-primary));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    .nav-link {
-      position: relative; color: var(--text-secondary);
-      font-size: 14px; font-weight: 500; padding: 8px 0; transition: color 0.3s;
-    }
-    .nav-link::after {
-      content: ''; position: absolute; bottom: 0; left: 0;
-      width: 0; height: 2px;
-      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-teal));
-      transition: width 0.3s;
-    }
-    .nav-link:hover, .nav-link.active { color: var(--text-primary); }
-    .nav-link:hover::after, .nav-link.active::after { width: 100%; }
-    
     .page-header {
-      background: rgba(3,5,8,0.95);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(0,212,170,0.1);
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 1000;
-      height: 64px;
+      padding: 32px 0 16px;
     }
     .header-container {
       max-width: 1200px;
