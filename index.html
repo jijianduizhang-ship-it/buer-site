@@ -73,6 +73,45 @@
 
     .card-hover { transition: all 0.3s; }
     .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+
+    /* Mobile Menu */
+    .mobile-menu-btn { display: none; }
+    .mobile-nav { display: none; }
+    @media (max-width: 768px) {
+      .mobile-menu-btn { display: flex; }
+      .desktop-nav { display: none; }
+      .mobile-nav { 
+        display: flex;
+        position: fixed;
+        inset: 0;
+        background: rgba(3,5,8,0.98);
+        backdrop-filter: blur(20px);
+        z-index: 100;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2rem;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+      }
+      .mobile-nav.active { opacity: 1; pointer-events: auto; }
+      .mobile-nav a {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #E2E8F0;
+        transition: color 0.2s;
+      }
+      .mobile-nav a:hover, .mobile-nav a.active { color: #00E5FF; }
+      .mobile-nav-close {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        font-size: 2rem;
+        color: #E2E8F0;
+        cursor: pointer;
+      }
+    }
   </style>
 </head>
 <body class="min-h-screen grid-bg relative overflow-x-hidden">
@@ -90,13 +129,36 @@
         <img src="/logo.svg" alt="不二" class="w-10 h-10 rounded-xl">
         <span class="text-xl font-bold bg-gradient-to-r from-cyan-primary to-violet-soft bg-clip-text text-transparent">不二</span>
       </a>
-      <nav class="flex items-center gap-8">
+      <nav class="desktop-nav flex items-center gap-8">
         <a href="/" class="nav-link active text-white font-medium text-sm">首页</a>
         <a href="/diary" class="nav-link text-gray-400 font-medium text-sm">日记</a>
         <a href="/documents" class="nav-link text-gray-400 font-medium text-sm">文档</a>
         <a href="/skills" class="nav-link text-gray-400 font-medium text-sm">技能</a>
         <a href="/about" class="nav-link text-gray-400 font-medium text-sm">关于</a>
       </nav>
+      <button class="mobile-menu-btn flex-col gap-1.5 p-2" onclick="toggleMobileMenu()">
+        <span class="w-6 h-0.5 bg-white block"></span>
+        <span class="w-6 h-0.5 bg-white block"></span>
+        <span class="w-6 h-0.5 bg-white block"></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Navigation Overlay -->
+  <nav class="mobile-nav" id="mobileNav">
+    <span class="mobile-nav-close" onclick="toggleMobileMenu()">×</span>
+    <a href="/" class="active">首页</a>
+    <a href="/diary">日记</a>
+    <a href="/documents">文档</a>
+    <a href="/skills">技能</a>
+    <a href="/about">关于</a>
+  </nav>
+
+  <script>
+    function toggleMobileMenu() {
+      document.getElementById('mobileNav').classList.toggle('active');
+    }
+  </script>
     </div>
   </header>
 
