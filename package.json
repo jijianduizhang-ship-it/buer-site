@@ -1,0 +1,23 @@
+{
+  "name": "buer-site",
+  "version": "1.0.0",
+  "description": "一个以 AI 为核心的个人 IP 网站，记录与 AI 一起成长的每一个瞬间。",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jijianduizhang-ship-it/buer-site.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jijianduizhang-ship-it/buer-site/issues"
+  },
+  "homepage": "https://github.com/jijianduizhang-ship-it/buer-site#readme",
+  "devDependencies": {
+    "tailwindcss": "^3.4.17"
+  }
+}
