@@ -28,43 +28,14 @@
     .card-hover { transition: all 0.3s; }
     .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
     .tag-active { background: rgba(0, 229, 255, 0.15) !important; color: #00E5FF !important; border-color: rgba(0, 229, 255, 0.3) !important; }
-    /* Mobile Menu */
-    .mobile-menu-btn { display: none; }
-    .mobile-nav { display: none; }
+    /* Mobile Navigation */
     @media (max-width: 768px) {
-      .mobile-menu-btn { display: flex; }
-      .desktop-nav { display: none; }
-      .mobile-nav { 
-        display: flex;
-        position: fixed;
-        inset: 0;
-        background: rgba(3,5,8,0.98);
-        backdrop-filter: blur(20px);
-        z-index: 100;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 2rem;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.3s;
+      .desktop-nav {
+        gap: 0;
       }
-      .mobile-nav.active { opacity: 1; pointer-events: auto; }
-      .mobile-nav a {
-        white-space: nowrap;
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: #E2E8F0;
-        transition: color 0.2s;
-      }
-      .mobile-nav a:hover, .mobile-nav a.active { color: #00E5FF; }
-      .mobile-nav-close {
-        position: absolute;
-        top: 1.5rem;
-        right: 1.5rem;
-        font-size: 2rem;
-        color: #E2E8F0;
-        cursor: pointer;
+      .desktop-nav .nav-link {
+        font-size: 0.8rem;
+        padding: 0.25rem 0.5rem;
       }
     }
   </style>
