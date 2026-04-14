@@ -87,6 +87,15 @@
         </div>
       </div>
 
+      <!-- Search -->
+      <div class="flex justify-center mb-6">
+        <div class="relative w-full max-w-md">
+          <input type="text" id="search-input" placeholder="搜索文档标题或内容..." class="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-3 pl-11 text-gray-300 text-sm placeholder-gray-500 focus:outline-none focus:border-cyan-500/40 transition-all">
+          <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">🔍</span>
+          <button id="search-clear" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 text-xs hidden">✕</button>
+        </div>
+      </div>
+
       <!-- Filter Tags -->
       <div class="flex items-center justify-center gap-2 mb-10 flex-wrap" id="filter-tags">
         <button class="tag-btn tag-active px-5 py-2 rounded-full bg-white/5 border border-white/10 text-gray-400 text-sm transition-all cursor-pointer" data-tag="全部">全部</button>
@@ -167,6 +176,7 @@
 
     let allDocs = [];
     let currentTag = '全部';
+    let currentSearch = '';
 
     async function loadDocs() {
       try {
@@ -176,6 +186,21 @@
         buildStatsBar(allDocs);
         buildFilterTags(allDocs);
         renderDocs();
+
+        // Search
+        const searchInput = document.getElementById('search-input');
+        const clearBtn = document.getElementById('search-clear');
+        searchInput.addEventListener('input', () => {
+          currentSearch = searchInput.value.trim();
+          clearBtn.classList.toggle('hidden', !currentSearch);
+          renderDocs();
+        });
+        clearBtn.addEventListener('click', () => {
+          searchInput.value = '';
+          currentSearch = '';
+          clearBtn.classList.add('hidden');
+          renderDocs();
+        });
       } catch (e) {
         document.getElementById('docs-list').classList.add('hidden');
         document.getElementById('empty-state').classList.remove('hidden');
@@ -183,7 +208,12 @@
     }
 
     function renderDocs() {
-      const filtered = currentTag === '全部' ? allDocs : allDocs.filter(d => d.category === currentTag);
+      const filtered = allDocs.filter(d => {
+        const matchTag = currentTag === '全部' || d.category === currentTag;
+        const kw = currentSearch.toLowerCase();
+        const matchSearch = !kw || d.title.toLowerCase().includes(kw) || d.excerpt.toLowerCase().includes(kw);
+        return matchTag && matchSearch;
+      });
       const container = document.getElementById('docs-list');
       const emptyState = document.getElementById('empty-state');
 
