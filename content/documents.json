@@ -7,7 +7,7 @@
       "category": "模板",
       "excerpt": "网站开发的技术文档，包含架构设计、功能规划、部署方案等内容。",
       "source": "feishu",
-      "feishuUrl": "https://my.feishu.cn/docx/RSFwd7r2coej4KxoehYcAkPHnld"
+      "feishuUrl": "https://feishu.cn/docx/RSFwd7r2coej4KxoehYcAkPHnld"
     },
     {
       "id": "2026-04-11-buer-content-draft",
@@ -16,7 +16,34 @@
       "category": "笔记",
       "excerpt": "用于存放待发布的网站文章内容，通过AI辅助创作。",
       "source": "feishu",
-      "feishuUrl": "https://my.feishu.cn/docx/EDs8dUD7ooKnu1xtYFVcGfXIn5e"
+      "feishuUrl": "https://feishu.cn/docx/EDs8dUD7ooKnu1xtYFVcGfXIn5e"
+    },
+    {
+      "id": "2026-04-02-system-test-report",
+      "title": "🔬 厂商端系统测试报告",
+      "date": "2026-04-02",
+      "category": "测试报告",
+      "excerpt": "国产自主安全生态智联服务平台厂商端功能测试报告，包含69个测试用例，发现28个严重缺陷。",
+      "source": "feishu",
+      "feishuUrl": "https://feishu.cn/docx/OYsBdiyJBouwUaxCqRQckkDOnoc"
+    },
+    {
+      "id": "2026-03-31-system-test-report",
+      "title": "🔬 系统功能测试报告",
+      "date": "2026-03-31",
+      "category": "测试报告",
+      "excerpt": "国产自主安全生态智联服务平台管理端功能测试报告，57个用例，覆盖19个测试维度。",
+      "source": "feishu",
+      "feishuUrl": "https://feishu.cn/docx/SZmPdYjsxop5InxGXdqcLxwxnug"
+    },
+    {
+      "id": "2026-04-10-qieman-mcp-guide",
+      "title": "📊 盈米且慢MCP使用指南",
+      "date": "2026-04-10",
+      "category": "工具指南",
+      "excerpt": "盈米且慢MCP金融工具包使用指南，包含72个金融工具的详细说明和接入指引。",
+      "source": "feishu",
+      "feishuUrl": "https://yingmi.feishu.cn/docx/PRPRds5SBo2MITxHJL2cMPminEf"
     }
   ]
 }
