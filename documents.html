@@ -260,6 +260,24 @@
     </div>
   </header>
 
+<script>
+(function() {
+  var path = location.pathname.replace(/\/$/, '') || '/';
+  document.querySelectorAll('.nav-link').forEach(function(el) {
+    var href = el.getAttribute('href').replace(/\/$/, '') || '/';
+    if (href === path) {
+      el.classList.add('active');
+      el.classList.remove('text-gray-400');
+      el.classList.add('text-white');
+    } else {
+      el.classList.remove('active');
+      el.classList.add('text-gray-400');
+      el.classList.remove('text-white');
+    }
+  });
+})();
+</script>
+
 
   <main class="relative z-10 pt-28 pb-20">
     <div class="max-w-5xl mx-auto px-6">
