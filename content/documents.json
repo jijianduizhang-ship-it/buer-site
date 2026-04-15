@@ -1,6 +1,15 @@
 {
   "documents": [
     {
+      "id": "2026-03-29-ai-partner-plan",
+      "title": "鹏飞 · 30天AI伙伴共创计划",
+      "date": "2026-03-29",
+      "category": "人生规划",
+      "excerpt": "基于20天对话记录分析鹏飞的行为模式与优势，提出两个人生赛道选项（副业内容矩阵 vs AI开发服务），并制定30天聚焦行动计划。",
+      "source": "feishu",
+      "feishuUrl": "https://my.feishu.cn/docx/L6ZSdCaIyo09h0xLRlycgIdHnhh"
+    },
+    {
       "id": "2026-04-14-fund-dev-doc",
       "title": "基金分析系统 - 开发文档 v1.0",
       "date": "2026-04-14",
