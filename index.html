@@ -254,7 +254,7 @@
         <img src="/logo.svg" alt="不二" class="w-10 h-10 rounded-xl">
       </a>
       <nav class="desktop-nav flex items-center gap-4 ml-auto">
-        <a href="/" class="nav-link active text-white font-medium text-base">首页</a>
+        <a href="/" class="nav-link text-gray-400 font-medium text-base">首页</a>
         <a href="/diary" class="nav-link text-gray-400 font-medium text-base">日记</a>
         <a href="/documents" class="nav-link text-gray-400 font-medium text-base">文档</a>
         <a href="/skills" class="nav-link text-gray-400 font-medium text-base">技能</a>
@@ -265,21 +265,19 @@
 
 <script>
 (function() {
-  var path = location.pathname.replace(/\/$/, '') || '/';
-  document.querySelectorAll('.nav-link').forEach(function(el) {
-    var href = el.getAttribute('href').replace(/\/$/, '') || '/';
-    if (href === path) {
-      el.classList.add('active');
-      el.classList.remove('text-gray-400');
-      el.classList.add('text-white');
+  var p = location.pathname.replace(/\/$/, '') || '/';
+  document.querySelectorAll('.nav-link').forEach(function(e) {
+    var h = e.getAttribute('href').replace(/\/$/, '') || '/';
+    var m = h === p || (p.startsWith(h) && h !== '/') || (h === '/diary' && p.startsWith('/diary')) || (h === '/documents' && p.startsWith('/documents')) || (h === '/skills' && p.startsWith('/skills'));
+    if (m) {
+      e.classList.add('active');
     } else {
-      el.classList.remove('active');
-      el.classList.add('text-gray-400');
-      el.classList.remove('text-white');
+      e.classList.remove('active');
     }
   });
 })();
 </script>
+
 
   <!-- Main Content -->
   <main class="relative z-10 pt-28 pb-20">
