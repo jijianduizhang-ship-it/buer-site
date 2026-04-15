@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-if (!GITHUB_TOKEN) { console.error("MISSING GITHUB_TOKEN env var"); process.exit(1); }
+if (!GITHUB_TOKEN) { console.error("MISSING GITHUB_TOKEN"); process.exit(1); }
 const fs = require('fs');
 const https = require('https');
 const BUER_SITE = '/root/.openclaw/workspace-jinhua/buer-site';
@@ -9,8 +9,12 @@ const GITHUB_API = 'https://api.github.com/repos/jijianduizhang-ship-it/buer-sit
 
 const httpsReq = (opts, body) => new Promise((res, rej) => {
   const r = https.request(opts, resp => {
-    let d = ''; resp.on('data', c => d += c);
-    resp.on('end', () => res({ s: resp.statusCode, d: JSON.parse(d || '{}') }));
+    let d = '';
+    resp.on('data', c => d += c);
+    resp.on('end', () => {
+      try { res({ s: resp.statusCode, d: JSON.parse(d || '{}') }); }
+      catch { res({ s: resp.statusCode, d: {} }); }
+    });
   });
   r.on('error', rej);
   if (body) r.write(typeof body === 'string' ? body : JSON.stringify(body));
@@ -19,85 +23,89 @@ const httpsReq = (opts, body) => new Promise((res, rej) => {
 
 const getSHA = async (p) => {
   try {
-    const r = await httpsReq({hostname:'api.github.com',path:GITHUB_API+'/'+p,headers:{'Authorization':'token '+GITHUB_TOKEN,'User-Agent':'gen','Accept':'application/vnd.github.v3+json'}});
-    return r.d.sha;
+    const r = await httpsReq({
+      hostname: 'api.github.com',
+      path: GITHUB_API + '/' + p,
+      headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'User-Agent': 'gen', 'Accept': 'application/vnd.github.v3+json' }
+    });
+    return r.d.sha || null;
   } catch { return null; }
 };
 
 const pushFile = async (p, c, m) => {
   const sha = await getSHA(p);
-  const b = {message:m, content:Buffer.from(c).toString('base64'), ...(sha?{sha}:{})};
-  const r = await httpsReq({hostname:'api.github.com',path:GITHUB_API+'/'+p,method:'PUT',headers:{'Authorization':'token '+GITHUB_TOKEN,'User-Agent':'gen','Accept':'application/vnd.github.v3+json','Content-Type':'application/json'}}, b);
+  const b = { message: m, content: Buffer.from(c).toString('base64'), ...(sha ? { sha } : {}) };
+  const r = await httpsReq({
+    hostname: 'api.github.com', path: GITHUB_API + '/' + p, method: 'PUT',
+    headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'User-Agent': 'gen', 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' }
+  }, b);
   return r;
 };
-const HDR = '<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${T}|不二</title><meta name="description" content="${D}"><link rel="canonical" href="https://buer.imoons.cn/"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.gstatic.com" crossorigin><link href=\'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap\' rel=\'stylesheet\'><script src="https://cdn.tailwindcss.com"></script><script>tailwind.config={theme:{extend:{colors:{dark:{950:"#030508",900:"#0a0f14",800:"#111120",700:"#1a1a2e"},cyan:{primary:"#00E5FF",glow:"#00b8d4"},violet:{primary:"#8B5CF6",soft:"#a78bfa"}},fontFamily:{sans:["Inter","sans-serif"]}}}}</script><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:"Inter",sans-serif;background:#030508;color:#E2E8F0;line-height:1.8}::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:#060810}::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#00E5FF,#8B5CF6);border-radius:3px}body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.025;background-image:url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\'/%3E%3C/svg%3E")}body::after{content:"";position:fixed;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,229,255,0.08),transparent);animation:scan 10s linear infinite;pointer-events:none;z-index:1}@keyframes scan{0%{top:-1px;opacity:0}5%{opacity:1}95%{opacity:0.5}100%{top:100vh;opacity:0}}.grid-bg{background-image:linear-gradient(rgba(0,229,255,0.015) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,0.015) 1px,transparent 1px);background-size:60px 60px}.glass-card{position:relative;background:rgba(8,10,20,0.75);backdrop-filter:blur(24px);border:1px solid rgba(139,92,246,0.1);border-radius:1.25rem;overflow:hidden;transition:all .4s}.glass-card::after{content:"";position:absolute;top:-50%;left:-75%;width:50%;height:200%;background:linear-gradient(105deg,transparent 40%,rgba(0,229,255,0.04) 45%,rgba(0,229,255,0.08) 50%,rgba(0,229,255,0.04) 55%,transparent 60%);transform:skewX(-15deg);pointer-events:none;transition:left .7s}.glass-card:hover::after{left:150%}.glass-card:hover{border-color:rgba(0,229,255,0.18);box-shadow:0 0 30px rgba(0,229,255,0.04),0 25px 60px rgba(0,0,0,0.5);transform:translateY(-5px)}.corner-tl{position:absolute;top:10px;left:10px;width:14px;height:14px;border-top:1px solid rgba(0,229,255,0.25);border-left:1px solid rgba(0,229,255,0.25);pointer-events:none}.corner-br{position:absolute;bottom:10px;right:10px;width:14px;height:14px;border-bottom:1px solid rgba(139,92,246,0.25);border-right:1px solid rgba(139,92,246,0.25);pointer-events:none}.nav-link{position:relative;transition:color .3s}.nav-link::after{content:"";position:absolute;bottom:-4px;left:0;width:0;height:2px;background:linear-gradient(90deg,#00E5FF,#8B5CF6);transition:width .3s;box-shadow:0 0 6px rgba(0,229,255,0.4)}.nav-link:hover::after,.nav-link.active::after{width:100%}.nav-link:hover,.nav-link.active{color:#00E5FF}.orb{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;animation:orb-float 14s ease-in-out infinite}@keyframes orb-float{0%,100%{transform:translate(0,0) scale(1);opacity:0.35}30%{transform:translate(25px,-35px) scale(1.08);opacity:0.55}60%{transform:translate(-20px,20px) scale(0.95);opacity:0.45}}.hero-title{background:linear-gradient(135deg,#00E5FF 0%,#a78bfa 35%,#8B5CF6 65%,#00E5FF 100%);background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:grad-shift 5s ease infinite}@keyframes grad-shift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}.badge-glow{animation:badge-pulse 3s ease-in-out infinite}@keyframes badge-pulse{0%,100%{box-shadow:0 0 10px rgba(0,229,255,0.08)}50%{box-shadow:0 0 22px rgba(0,229,255,0.18)}}.divider-line{height:1px;background:linear-gradient(90deg,transparent,rgba(139,92,246,0.15),rgba(0,229,255,0.15),transparent)}.stat-num{background:linear-gradient(135deg,#00E5FF,#8B5CF6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.btn-primary{position:relative;overflow:hidden;background:linear-gradient(135deg,#00E5FF 0%,#8B5CF6 100%);box-shadow:0 4px 20px rgba(0,229,255,0.15);transition:all .3s}.btn-primary::before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.12),transparent);transition:left .5s}.btn-primary:hover::before{left:100%}.btn-primary:hover{transform:translateY(-2px)}.tag-pill{background:rgba(0,229,255,0.05);border:1px solid rgba(0,229,255,0.1);transition:all .3s}.article-content{color:#94a3b8;line-height:1.9}.article-content h2{font-size:1.4rem;font-weight:700;color:#fff;margin:2rem 0 1rem}.article-content p{color:#94a3b8;margin-bottom:1rem}.article-content strong{color:#e2e8f0}@media(max-width:768px){.desktop-nav{gap:0;justify-content:flex-end;overflow:hidden}.desktop-nav .nav-link{font-size:.7rem}}</style></head><body class="min-h-screen grid-bg relative overflow-x-hidden"><div class="fixed inset-0 overflow-hidden pointer-events-none" style="z-index:0"><div class="orb w-[500px] h-[500px] bg-cyan-500/20 top-[-100px] left-[-100px]"></div><div class="orb w-[400px] h-[400px] bg-violet-500/15 bottom-[-80px] right-[-80px]"></div><div class="orb w-[300px] h-[300px] bg-cyan-400/10 top-[40%] left-[50%] -translate-x-1/2"></div></div><header class="fixed top-0 left-0 right-0 z-50" style="background:rgba(3,5,8,0.75);backdrop-filter:blur(24px);border-bottom:1px solid rgba(139,92,246,0.08)"><div class="max-w-6xl mx-auto px-6 py-3.5 flex items-center justify-between"><a href="/" class="flex items-center gap-3"><img src="/logo.svg" alt="不二" class="w-10 h-10 rounded-xl"></a><nav class="desktop-nav flex items-center gap-4 ml-auto"><a href="/" class="nav-link text-gray-400 font-medium text-base">首页</a><a href="/diary" class="nav-link text-gray-400 font-medium text-base">日记</a><a href="/documents" class="nav-link text-gray-400 font-medium text-base">文档</a><a href="/skills" class="nav-link text-gray-400 font-medium text-base">技能</a><a href="/about" class="nav-link text-gray-400 font-medium text-base">关于</a><script>(function(){var p=location.pathname.replace(/\\/h$/,'');document.querySelectorAll('.nav-link').forEach(function(e){var h=e.getAttribute('href').replace(/\\/h$/,'');var m=h===p||p.startsWith(h)&&h!=='''||(h=='/diary')|&p.startsWith('/diary')||(h=='/documents')&p.startsWith('/documents')||h=='/skills'&&p.startsWith('/skills');if(m){e.classList.add('active')}else{e.classList.remove('active')}})})();</script></nav></div></header><main class="relative z-10 pt-28 pb-20"><div class="max-w-3xl mx-auto px-6">';
-const FTR = '</div></main><footer class="relative z-10 border-t border-white/4 py-10"><div class="max-w-6xl mx-auto px-6"><div class="flex items-center gap-3"><img src="/logo.svg" alt="不" class="w-8 h-8 rounded-lg"><span class="text-gray-500 text-sm">© 2026 buer.imoons.cn</span></div></div></footer></body></html>';
+
+const NAV_SCRIPT = `<script>(function(){var p=location.pathname.replace(/\\/$/,"");document.querySelectorAll(".nav-link").forEach(function(e){var h=e.getAttribute("href").replace(/\\/$/,"");var m=h===p||(p.startsWith(h)&&h!=="/")||(h==="/diary"&&p.startsWith("/diary"))||(h==="/documents"&&p.startsWith("/documents"))||(h==="/skills"&&p.startsWith("/skills"));if(m){e.classList.add("active")}else{e.classList.remove("active")}})})();</script>`;
+
+function buildPage(title, desc, bodyContent) {
+  const css = fs.readFileSync(BUER_SITE + '/styles.css', 'utf8');
+  return '<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' + title + '|不二</title><meta name="description" content="' + desc + '"><link rel="canonical" href="https://buer.imoons.cn/"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="/styles.css"><style>' + css + '</style></head><body class="min-h-screen grid-bg relative overflow-x-hidden"><div class="fixed inset-0 overflow-hidden pointer-events-none" style="z-index:0"><div class="orb w-[500px] h-[500px] bg-cyan-500/20 top-[-100px] left-[-100px]"></div><div class="orb w-[400px] h-[400px] bg-violet-500/15 bottom-[-80px] right-[-80px]"></div><div class="orb w-[300px] h-[300px] bg-cyan-400/10 top-[40%] left-[50%] -translate-x-1/2"></div></div><header class="fixed top-0 left-0 right-0 z-50" style="background:rgba(3,5,8,0.75);backdrop-filter:blur(24px);border-bottom:1px solid rgba(139,92,246,0.08)"><div class="max-w-6xl mx-auto px-6 py-3.5 flex items-center justify-between"><a href="/" class="flex items-center gap-3"><img src="/logo.svg" alt="不二" class="w-10 h-10 rounded-xl"></a><nav class="desktop-nav flex items-center gap-4 ml-auto"><a href="/" class="nav-link text-gray-400 font-medium text-base">首页</a><a href="/diary" class="nav-link text-gray-400 font-medium text-base">日记</a><a href="/documents" class="nav-link text-gray-400 font-medium text-base">文档</a><a href="/skills" class="nav-link text-gray-400 font-medium text-base">技能</a><a href="/about" class="nav-link text-gray-400 font-medium text-base">关于</a>' + NAV_SCRIPT + '</nav></div></header><main class="relative z-10 pt-28 pb-20"><div class="max-w-3xl mx-auto px-6">' + bodyContent + '</div></main><footer class="relative z-10 border-t border-white/4 py-10"><div class="max-w-6xl mx-auto px-6"><div class="flex items-center gap-3"><img src="/logo.svg" alt="不" class="w-8 h-8 rounded-lg"><span class="text-gray-500 text-sm">© 2026 buer.imoons.cn</span></div></div></footer></body></html>';
+}
+
+function esc(str) {
+  return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
 
 function genDiary(item) {
-  const T = item.title, D = item.excerpt || '';
-  const content = (item.content || item.excerpt || '').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
-  const tags = (item.tags||[]).map(t => `<span class="tag-pill text-xs px-3 py-1 rounded-full text-violet-soft">${t}</span>`).join('');
-  return HDR.replace('${T}',T).replace('${D}',D) +
-    `<article class="glass-card rounded-2xl p-8 md:p-10 mb-8"><div class="corner-tl"></div><div class="corner-br"></div>` +
-    `<div class="flex flex-wrap gap-2 mb-6"><span class="tag-pill text-xs px-3 py-1 rounded-full text-cyan-primary">${item.date}</span>${tags}</div>` +
-    `<h1 class="text-3xl font-bold text-white mb-6 leading-snug">${T}</h1><div class="divider-line mb-8"></div>` +
-    `<div class="article-content"><p>${content}</p></div></article>` +
-    `<div class="text-center"><a href="/diary" class="btn-primary inline-flex items-center gap-2 px-7 py-3 text-dark-950 font-semibold rounded-xl text-sm">← 返回日记列表</a></div>` +
-    FTR;
+  const T = esc(item.title || '');
+  const D = esc(item.excerpt || '');
+  const content = (item.content || item.excerpt || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>').replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  const tags = (item.tags || []).map(t => '<span class="tag-pill text-xs px-3 py-1 rounded-full text-violet-soft">' + esc(t) + '</span>').join('');
+  const article = '<article class="glass-card rounded-2xl p-8 md:p-10 mb-8"><div class="corner-tl"></div><div class="corner-br"></div><div class="flex flex-wrap gap-2 mb-6"><span class="tag-pill text-xs px-3 py-1 rounded-full text-cyan-primary">' + esc(item.date) + '</span>' + tags + '</div><h1 class="text-3xl font-bold text-white mb-6 leading-snug">' + T + '</h1><div class="divider-line mb-8"></div><div class="article-content"><p>' + content + '</p></div></article><div class="text-center"><a href="/diary" class="btn-primary inline-flex items-center gap-2 px-7 py-3 text-dark-950 font-semibold rounded-xl text-sm">← 返回日记列表</a></div>';
+  return buildPage(T, D, article);
 }
 
 function genDoc(item) {
-  const T = item.title, D = item.excerpt || '';
-  const content = (item.content || item.excerpt || '').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
-  const feishuLink = item.feishuUrl ? `<div class="mt-8 pt-6 border-t border-white/5"><a href="${item.feishuUrl}" target="_blank" class="inline-flex items-center gap-2 text-cyan-primary hover:text-cyan-300 text-sm">📎 查看飞书原文 →</a></div>` : '';
-  return HDR.replace('${T}',T).replace('${D}',D) +
-    `<article class="glass-card rounded-2xl p-8 md:p-10 mb-8"><div class="corner-tl"></div><div class="corner-br"></div>` +
-    `<div class="flex flex-wrap gap-2 mb-6"><span class="tag-pill text-xs px-3 py-1 rounded-full text-cyan-primary">${item.date}</span>` +
-    `<span class="tag-pill text-xs px-3 py-1 rounded-full text-violet-soft">${item.category||'文档'}</span></div>` +
-    `<h1 class="text-3xl font-bold text-white mb-6 leading-snug">${T}</h1><div class="divider-line mb-8"></div>` +
-    `<div class="article-content"><p>${content}</p></div>${feishuLink}</article>` +
-    `<div class="text-center"><a href="/documents" class="btn-primary inline-flex items-center gap-2 px-7 py-3 text-dark-950 font-semibold rounded-xl text-sm">← 返回文档列表</a></div>` +
-    FTR;
+  const T = esc(item.title || '');
+  const D = esc(item.excerpt || '');
+  const content = (item.content || item.excerpt || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>').replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  const feishuLink = item.feishuUrl ? '<div class="mt-8 pt-6 border-t border-white/5"><a href="' + esc(item.feishuUrl) + '" target="_blank" class="inline-flex items-center gap-2 text-cyan-primary hover:text-cyan-300 text-sm">📎 查看飞书原文 →</a></div>' : '';
+  const article = '<article class="glass-card rounded-2xl p-8 md:p-10 mb-8"><div class="corner-tl"></div><div class="corner-br"></div><div class="flex flex-wrap gap-2 mb-6"><span class="tag-pill text-xs px-3 py-1 rounded-full text-cyan-primary">' + esc(item.date) + '</span><span class="tag-pill text-xs px-3 py-1 rounded-full text-violet-soft">' + esc(item.category || '文档') + '</span></div><h1 class="text-3xl font-bold text-white mb-6 leading-snug">' + T + '</h1><div class="divider-line mb-8"></div><div class="article-content"><p>' + content + '</p></div>' + feishuLink + '</article><div class="text-center"><a href="/documents" class="btn-primary inline-flex items-center gap-2 px-7 py-3 text-dark-950 font-semibold rounded-xl text-sm">← 返回文档列表</a></div>';
+  return buildPage(T, D, article);
 }
 
 async function main() {
-  console.log('=== 独立页面生成器 ===');
-  const G = globalThis;
+  console.log('=== generate-pages running ===');
+  let totalOk = 0, totalErr = 0;
 
-  // Diary
   const dPath = CONTENT_DIR + '/diary.json';
   if (fs.existsSync(dPath)) {
-    const dData = JSON.parse(fs.readFileSync(dPath,'utf8'));
+    const dData = JSON.parse(fs.readFileSync(dPath, 'utf8'));
     const dDir = BUER_SITE + '/diary';
-    if (!fs.existsSync(dDir)) fs.mkdirSync(dDir, {recursive:true});
-    let count = 0;
-    for (const item of (dData.diary||[])) {
+    if (!fs.existsSync(dDir)) fs.mkdirSync(dDir, { recursive: true });
+    for (const item of (dData.diary || [])) {
       const id = item.id || item.date;
       const html = genDiary(item);
-      fs.writeFileSync(dDir+'/'+id+'.html', html);
-      const r = await pushFile('diary/'+id+'.html', html, '更新日记:'+item.title);
-      if (r.s===200||r.s===201) { console.log('diary/'+id+'.html OK'); count++; }
-      else console.log('diary/'+id+'.html ERR:'+JSON.stringify(r.d).slice(0,80));
+      fs.writeFileSync(dDir + '/' + id + '.html', html);
+      const r = await pushFile('diary/' + id + '.html', html, '更新日记:' + item.title);
+      if (r.s === 200 || r.s === 201) { console.log('OK diary/' + id + '.html'); totalOk++; }
+      else { console.log('ERR diary/' + id + '.html ' + r.s + ':', JSON.stringify(r.d).slice(0, 80)); totalErr++; }
     }
-    console.log('Diary: '+count+' pages');
   }
 
-  // Documents
   const docPath = CONTENT_DIR + '/documents.json';
   if (fs.existsSync(docPath)) {
-    const docData = JSON.parse(fs.readFileSync(docPath,'utf8'));
+    const docData = JSON.parse(fs.readFileSync(docPath, 'utf8'));
     const docDir = BUER_SITE + '/documents';
-    if (!fs.existsSync(docDir)) fs.mkdirSync(docDir, {recursive:true});
-    let count = 0;
-    for (const item of (docData.documents||[])) {
+    if (!fs.existsSync(docDir)) fs.mkdirSync(docDir, { recursive: true });
+    for (const item of (docData.documents || [])) {
       const id = item.id || item.title;
       const html = genDoc(item);
-      fs.writeFileSync(docDir+'/'+id+'.html', html);
-      const r = await pushFile('documents/'+id+'.html', html, '更新文档:'+item.title);
-      if (r.s===200||r.s===201) { console.log('documents/'+id+'.html OK'); count++; }
+      fs.writeFileSync(docDir + '/' + id + '.html', html);
+      const r = await pushFile('documents/' + id + '.html', html, '更新文档:' + item.title);
+      if (r.s === 200 || r.s === 201) { console.log('OK documents/' + id + '.html'); totalOk++; }
+      else { console.log('ERR documents/' + id + '.html ' + r.s + ':', JSON.stringify(r.d).slice(0, 80)); totalErr++; }
     }
-    console.log('Documents: '+count+' pages');
   }
-  console.log('Done');
+  console.log('Done. OK=' + totalOk + ' ERR=' + totalErr);
+  if (totalErr > 0) process.exit(1);
 }
+
 main().catch(e => { console.error(e); process.exit(1); });
