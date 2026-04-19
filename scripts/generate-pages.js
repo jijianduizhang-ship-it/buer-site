@@ -104,6 +104,19 @@ async function main() {
       else { console.log('ERR documents/' + id + '.html ' + r.s + ':', JSON.stringify(r.d).slice(0, 80)); totalErr++; }
     }
   }
+  // 同步 diary.json 和 documents.json 到 GitHub（列表页动态加载这两个文件）
+  const diaryContent = fs.existsSync(CONTENT_DIR + '/diary.json') ? fs.readFileSync(CONTENT_DIR + '/diary.json', 'utf8') : null;
+  const docContent = fs.existsSync(CONTENT_DIR + '/documents.json') ? fs.readFileSync(CONTENT_DIR + '/documents.json', 'utf8') : null;
+  if (diaryContent) {
+    const r1 = await pushFile('content/diary.json', diaryContent, '同步日记列表');
+    if (r1.s === 200 || r1.s === 201) console.log('OK content/diary.json');
+    else console.log('ERR content/diary.json ' + r1.s);
+  }
+  if (docContent) {
+    const r2 = await pushFile('content/documents.json', docContent, '同步文档列表');
+    if (r2.s === 200 || r2.s === 201) console.log('OK content/documents.json');
+    else console.log('ERR content/documents.json ' + r2.s);
+  }
   console.log('Done. OK=' + totalOk + ' ERR=' + totalErr);
   if (totalErr > 0) process.exit(1);
 }
