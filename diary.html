@@ -319,7 +319,7 @@
 
     async function loadDiary() {
       try {
-        const res = await fetch('/content/diary.json');
+        const res = await fetch('/content/diary.json?v=' + Date.now());
         const data = await res.json();
         allDiary = data.diary;
         renderDiary();
